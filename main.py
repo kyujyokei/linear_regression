@@ -35,14 +35,21 @@ iteration = 100000
 # b_history = [b]
 # w_history = [w_dict]
 
-# print(w_dict)
+# print(y_data['price'])
 
-# for i in range (iteration):
-#     b_grad = 0.0
-#     w_grad = [0.0 for _ in range(0,len(x_data))]
-#     for j in range(len(x_data)):
-#         b_grad = b_grad - 2.0 * (y_data[j] - b - w * x_data[j]) * 1.0
-#         for n in features:
-#             w_grad = w_grad - 2.0 * (y_data[j] - b - w * x_data[j]) * x_data[j]
-#             w = w - lr * w_grad
-#         b = b - lr * b_grad
+for i in range (iteration):
+    b_grad = 0.0
+    w_grad = [0.0 for _ in range(0,len(x_data))]
+    for j in range(len(x_data)):
+        for n in features:
+            # print(y_data['price'][j])
+            # print(w_dict[n])
+            # print(x_data[n][j])
+            b_grad = b_grad - 2.0 * (y_data['price'][j] - b - w_dict[n] * x_data[n][j]) * 1.0
+            w_grad = w_grad - 2.0 * (y_data['price'][j] - b - w_dict[n] * x_data[n][j]) * x_data[n][j]
+            w_dict[n] = w_dict[n] - lr * w_grad
+        b = b - lr * b_grad
+
+
+# print("B:", b)
+# print("W:", w_dict)

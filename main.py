@@ -18,13 +18,27 @@ colnames = D.columns.values.tolist() # colnames is an array
 x_data = D[colnames[2:-1]] # from date to the end, excluding id
 y_data = D[colnames[-1:]] # the prices only
 
-b = -120 #initial b
+print(x_data)
 
-w = [ -4 for _ in range(0,len(colnames-3))] # -3 is to exclude dummy, id and price columns
+# b = -120 #initial b
+# w = [ -4 for _ in range(0,len(x_data))] # an array of all the Ws for each feature
+#
+# lr = 0.000001 #learning rate
+# iteration = 100000
+#
+# b_history = [b]
+# w_history = [w]
+#
+# for i in range (iteration):
+#     b_grad = 0.0
+#     w_grad = [0.0 for _ in range(0,len(x_data))]
+#     for j in range(len(x_data)):
+#         b_grad = b_grad - 2.0*(y_data[j] - b - w*x_data[j])*1.0
+#         w_grad = w_grad - 2.0*(y_data[j] - b - w*x_data[j])*x_data[j]
+#     b = b - lr * b_grad
+#     w = w - lr * w_grad
 
 # print(w)
-
-
 # print(X)
 # print(y_data.head())
 # print(x_data.head())

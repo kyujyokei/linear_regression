@@ -51,20 +51,20 @@ iteration = 1
 
 for i in range (iteration):
     b_grad = 0.0
-    # for j in range(len(x_data)):
-    for j in range(0,1):
-        w_grad = [0.0 for _ in range(0, len(x_data))]
-        for k, n in enumerate(features):
+    w_grad = [0.0 for _ in range(0, len(x_data))]
+
+    for k, n in enumerate(features):
+
+        for j in range(len(x_data)):
 
             b_grad = b_grad - 2.0 * (y_data['price'][j] - b - w_dict[n] * x_data[n][j]) * 1.0
-
             w_grad[k] = w_grad[k] - 2.0 * (y_data['price'][j] - b - w_dict[n] * x_data[n][j]) * x_data[n][j]
 
-            w_dict[n] = w_dict[n] - lr * w_grad[k]
+        w_dict[n] = w_dict[n] - lr * w_grad[k]
 
 
-        b = b - lr * b_grad
+    b = b - lr * b_grad
 
 
-print("B:", b)
-print("W:", w_dict)
+print("b:", b)
+print("w:", w_dict)

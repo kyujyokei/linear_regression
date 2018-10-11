@@ -39,8 +39,8 @@ for i in range (iteration):
 
         for j in range(len(x_data)):
 
-            b_grad = b_grad - 2.0 * (y_data['price'][j] - b - w_dict[n] * x_data[n][j]) * 1.0
-            w_grad[k] = w_grad[k] - 2.0 * (y_data['price'][j] - b - w_dict[n] * x_data[n][j]) * x_data[n][j]
+            b_grad =  (  b + w_dict[n] * x_data[n][j]) - y_data['price'][j] * 1.0
+            w_grad[k] = w_grad[k] - (2.0 * (y_data['price'][j] - b - w_dict[n] * x_data[n][j])) * x_data[n][j]
 
         w_dict[n] = w_dict[n] - lr * w_grad[k]
 

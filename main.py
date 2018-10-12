@@ -1,35 +1,45 @@
 import numpy as np
 
 
+def load_file(filename, has_label=True):
+    data = np.genfromtxt(filename, dtype=np.str, delimiter=",")
 
-data = np.genfromtxt("PA1_train.csv", dtype=np.str, delimiter=",")
+    data = np.delete(data, 0, axis=0)
+    data = np.delete(data, 1, axis=1)
 
-data = np.delete(data, 0, axis=0)
-data = np.delete(data, 1, axis=1)
+    data = np.insert(data, 2, values='year', axis=1)
+    data = np.insert(data, 2, values='day', axis=1)
+    data = np.insert(data, 2, values='month', axis=1)
 
-data = np.insert(data, 2, values='year', axis=1)
-data = np.insert(data, 2, values='day', axis=1)
-data = np.insert(data, 2, values='month', axis=1)
+    # read data
 
-# read data
+    for i in range(len(data)):
+        # print(data[i])
+        date = data[i][1].split('/')
+        data[i][2], data[i][3], data[i][4] = date[0], date[1], date[2]
 
-for i in range(len(data)):
-    # print(data[i])
-    date = data[i][1].split('/')
-    data[i][2], data[i][3], data[i][4] = date[0], date[1], date[2]
+        if data[i][17] == '0':
+            data[i][17] = data[i][16]
 
-    if data[i][17] == '0':
-        data[i][17] = data[i][16]
+        if data[i][18][:3] == '981':
+            data[i][18] = 1
+        else:
+            data[i][18] = 0
 
-    if data[i][18][:3] == '981':
-        data[i][18] = 1
+    data = np.delete(data, 1, axis=1)
+    data = data.astype(float)
+    label = data[:, -1:]
+    data = data[:, :-1]
+
+    print("Waterfront:  ", calc_percentage(data[:, 9]))
+    print("Condition:   ", calc_percentage(data[:, 11]))
+    print("Grade:       ", calc_percentage(data[:, 12]))
+    print("ZIP Code:    ", calc_percentage(data[:, 17]))
+
+    if has_label:
+        return data, label
     else:
-        data[i][18] = 0
-
-data = np.delete(data, 1, axis=1)
-data = data.astype(float)
-label = data[:, -1:]
-data = data[:, :-1]
+        return data
 
 
 
@@ -55,10 +65,6 @@ def calc_percentage(data):
 # print("", np.percentile(data, 1))
 # print(data[0])
 
-print("Waterfront:  ", calc_percentage(data[:, 9]))
-print("Condition:   ", calc_percentage(data[:, 11]))
-print("Grade:       ", calc_percentage(data[:, 12]))
-print("ZIP Code:    ", calc_percentage(data[:, 17]))
 
 
 
@@ -93,13 +99,14 @@ def normalize_matrix(data):
     return data
 
 
+data, label = load_file("PA1_train.csv")
 data = normalize_matrix(data)
 
 data_t = np.transpose(data)
 # print(data_t[1])
 
 
-lr = 0.001
+lr = 0.0001
 lam = 0.1
 
 w = np.zeros((len(data[0]), 1))
@@ -112,14 +119,20 @@ for iter in range(10000):
 
     w += lr * grad
 
-predict = np.matmul(data, w)
+train_predict = np.matmul(data, w)
 
 print("W: ", w)
 
-sse = (((label - predict).sum())**2)*0.5
+train_sse = (((label - train_predict)**2).sum())
+
+print("Train SSE: ", train_sse)
+
+valid_data, valid_label = load_file("PA1_dev.csv")
+
+dev_predict = np.matmul(valid_data, w)
+dev_sse = (((valid_label - dev_predict)**2).sum())
 
 
-print("Predict: ", predict, " Truth: ", label[:10])
-print(sse)
+print("Dev SSE: ", dev_sse)
 
 

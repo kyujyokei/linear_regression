@@ -128,6 +128,7 @@ train_sse = (((label - train_predict)**2).sum())
 print("Train SSE: ", train_sse)
 
 valid_data, valid_label = load_file("PA1_dev.csv")
+valid_data = normalize_matrix(valid_data)
 
 dev_predict = np.matmul(valid_data, w)
 dev_sse = (((valid_label - dev_predict)**2).sum())

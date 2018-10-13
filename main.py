@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 def load_file(filename, has_label=True):
@@ -80,10 +81,13 @@ def normalize(v):
     :param v:
     :return:
     """
-    norm = np.linalg.norm(v)
-    if norm == 0:
-       return v
-    return v / norm
+    if np.ptp(v) == 0:
+        return v / v[0]
+    return (v - v.min()) / (np.ptp(v))
+    # norm = np.linalg.norm(v)
+    # if norm == 0:
+    #    return v
+    # return v / norm
 
 
 def normalize_matrix(data):
@@ -106,7 +110,7 @@ data_t = np.transpose(data)
 # print(data_t[1])
 
 
-lr = 0.0001
+lr = 0.000001
 lam = 0.1
 
 w = np.zeros((len(data[0]), 1))
@@ -118,6 +122,16 @@ for iter in range(10000):
     grad = np.matmul(data_t, label - predict_y) + lam * w
 
     w += lr * grad
+
+    if iter == 9990:
+        print("W: ", w)
+        norm = 0
+        for val in grad:
+            norm += val ** 2
+        norm = math.sqrt(norm)
+
+        # print()
+        print("Norm: ", norm)
 
 train_predict = np.matmul(data, w)
 

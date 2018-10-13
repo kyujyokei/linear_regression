@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import csv
 
 
 def load_file(filename, has_label=True):
@@ -37,12 +38,36 @@ def load_file(filename, has_label=True):
     print("Grade:       ", calc_percentage(data[:, 12]))
     print("ZIP Code:    ", calc_percentage(data[:, 17]))
 
+    with open(filename+'stats.csv', mode='w') as file:
+        writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+        # writer.writerow(['John Smith', 'Accounting', 'November'])
+        # writer.writerow(['Erica Meyers', 'IT', 'March'])
+        writer.writerow(['','Mean', 'Standard Deviation', 'Range', 'Min', 'Max'])
+
+        for k in range(0,22):
+            if k != 9 or k != 11 or k != 12 or k!= 17:
+                # print("CALC = ",k)
+                # print_stats(data[:, k])
+                writer.writerow([k,
+                                 np.mean(data[:, k], axis=0),
+                                 np.std(data[:, k], axis=0),
+                                 np.ptp(data[:, k], axis=0),
+                                 np.min(data[:, k], axis=0),
+                                 np.max(data[:, k], axis=0)])
+
+
     if has_label:
         return data, label
     else:
         return data
 
-
+def print_stats(data):
+    print("Mean: ", np.mean(data, axis=0))
+    print("Standard Deviation: ", np.std(data, axis=0))
+    print("Range: ", np.ptp(data, axis=0))
+    print("Min", np.min(data, axis=0))
+    print("Max", np.max(data, axis=0))
 
 
 def calc_percentage(data):
@@ -123,8 +148,8 @@ for iter in range(10000):
 
     w += lr * grad
 
-    if iter == 9990:
-        print("W: ", w)
+    if iter == 99999:
+        # print("W: ", w)
         norm = 0
         for val in grad:
             norm += val ** 2
@@ -135,17 +160,24 @@ for iter in range(10000):
 
 train_predict = np.matmul(data, w)
 
-print("W: ", w)
+# print("W: ", w)
 
 train_sse = (((label - train_predict)**2).sum())
 
 print("Train SSE: ", train_sse)
 
+print("=======================================================")
+
 valid_data, valid_label = load_file("PA1_dev.csv")
 valid_data = normalize_matrix(valid_data)
 
 dev_predict = np.matmul(valid_data, w)
+
 dev_sse = (((valid_label - dev_predict)**2).sum())
+
+print("=======================================================")
+
+test_data = load_file("PA1_test.csv")
 
 
 print("Dev SSE: ", dev_sse)
